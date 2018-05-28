@@ -8,15 +8,14 @@ void matmul( float*, const float*, const float*, unsigned int, unsigned int, uns
 ////////////////////////////////////////////////////////////////////////////////
 //! C = A * B
 //! @param C          result matrix
-//! @param A          matrix A 
+//! @param A          matrix A
 //! @param B          matrix B
 //! @param hA         height of matrix A
 //! @param wB         width of matrix B
 ////////////////////////////////////////////////////////////////////////////////
 
-/* You'll need to modify this function such that matrix B is accessed
- * correctly once you change the memory layout to column-major. */
-void matmul(float* C, const float* A, const float* B, unsigned int hA, 
+/* matrix B is currently layed out and accessed in column-major. */
+void matmul(float* C, const float* A, const float* B, unsigned int hA,
     unsigned int wA, unsigned int wB)
 {
   for (unsigned int i = 0; i < hA; ++i)
@@ -43,8 +42,7 @@ Matrix Allocate2ndMatrix(int height, int width)
 
   M.elements = (float*) malloc(size*sizeof(float));
 
-  /* This is a row-major allocation and initialization.
-   * You need to modify this function which is only called
+  /* This function which is currently called
    * for Matrix B such that a column-major ordering is
    * performed. */
   for(unsigned int i = 0; i < M.height * M.width; i++)
@@ -53,5 +51,4 @@ Matrix Allocate2ndMatrix(int height, int width)
     M.elements[(((int)(i / M.pitch)) + (M.pitch * i)) % (M.height * M.width)] = (rand() / (float)RAND_MAX);
   }
   return M;
-}	
-
+}
