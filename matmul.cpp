@@ -4,6 +4,7 @@
 #define A(i,j,wA) A[i * wA + j]
 #define B(i,j,wB) B[i * wB + j]
 #define C(i,j,wB) C[i * wB + j]
+#define TILE 16
 
 Matrix Allocate2ndMatrix(int height, int width, int init);
 
@@ -22,9 +23,25 @@ void matmul( float*, const float*, const float*, unsigned int, unsigned int, uns
 void matmul(float* C, const float* A, const float* B, unsigned int hA,
     unsigned int wA, unsigned int wB)
 {
-  double wT = 16;
+  double TPS = hA/TILE;
+  double TT = TPS*TPS;
 
-   for (unsigned int i = 0; i < wB; i += wT) {
+  for (unsigned int cT = 0; cT < TT; cT++) {
+    for (unsigned int abT = 0; abT < TPS; abT++) {
+      for (unsigned int i = 0; i < TILE; i++) {
+        for (unsigned int j = 0; j < TILE; j++) {
+          float sum = 0;
+          for (unsigned int k = 0; k < TILE; k++) {
+            sum += A[(i*hA)+(abT*TILE)+k] * B[(j*hA)+(abT*TILE)+k]
+          }
+          C[(i*hA)+(cT*TILE)+j] += sum;
+        }
+      }
+    }
+  }
+
+
+   /*for (unsigned int i = 0; i < wB; i += wT) {
 	   for (unsigned int j = 0; j < wB; j += wT) {
 	      for (unsigned int k = 0; k < wB; k += wT) {
 		      for (unsigned int x = i; x < i + wT; x++) {
@@ -36,7 +53,7 @@ void matmul(float* C, const float* A, const float* B, unsigned int hA,
 		      }
 	      }
 	   }
-   }
+   }*/
   /*for (unsigned int i = 0; i < hA; ++i) {
     for (unsigned int j = 0; j < wB; ++j) {
       double sum = 0;
