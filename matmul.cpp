@@ -23,53 +23,23 @@ void matmul( float*, const float*, const float*, unsigned int, unsigned int, uns
 void matmul(float* C, const float* A, const float* B, unsigned int hA,
     unsigned int wA, unsigned int wB)
 {
-  double TPS = hA/TILE;
-  double TT = TPS*TPS;
-
-  for (unsigned int cT = 0; cT < TT; cT++) {
-    for (unsigned int abT = 0; abT < TPS; abT++) {
-      for (unsigned int i = 0; i < TILE; i++) {
-        for (unsigned int j = 0; j < TILE; j++) {
-          float sum = 0;
-          for (unsigned int k = 0; k < TILE; k++) {
-            sum += A[(i*hA)+(abT*TILE)+k] * B[(j*hA)+(abT*TILE)+k]
-          }
-          C[(i*hA)+(cT*TILE)+j] += sum;
-        }
-      }
-    }
-  }
-
-
-   /*for (unsigned int i = 0; i < wB; i += wT) {
-	   for (unsigned int j = 0; j < wB; j += wT) {
-	      for (unsigned int k = 0; k < wB; k += wT) {
-		      for (unsigned int x = i; x < i + wT; x++) {
-		         for (unsigned int y = j; y < j + wT; y++) {
-               double sum = 0;
-			         for (unsigned int z = k; z < k + wT; z++) {
-                  double a = A(x,z,hA);
-                  double b = B(y,z,hA);
+   for (unsigned int i = 0; i < wB; i += TILE) {
+	   for (unsigned int j = 0; j < wB; j += TILE) {
+	      for (unsigned int k = 0; k < wB; k += TILE) {
+		      for (unsigned int x = i; x < i + TILE; x++) {
+		         for (unsigned int y = j; y < j + TILE; y++) {
+               float sum = 0;
+			         for (unsigned int z = k; z < k + TILE; z++) {
+                  float a = A(x,z,hA);
+                  float b = B(y,z,hA);
                   sum += a * b;
 			         }
-               C(x,y,wB) += (float)sum;
+               C(x,y,wB) += sum;
 		         }
 		      }
 	      }
 	   }
-   }*/
-  /*for (unsigned int i = 0; i < hA; ++i) {
-    for (unsigned int j = 0; j < wB; ++j) {
-      double sum = 0;
-      for (unsigned int k = 0; k < wA; ++k) {
-        double a = A[i * wA + k];
-        //double b = B[k * wB + j];
-        double b = B[j * wB + k];
-        sum += a * b;
-      }
-      C[i * wB + j] = (float)sum;
-    }
-  }*/
+   }
 }
 
 // Allocate a matrix of dimensions height*width
