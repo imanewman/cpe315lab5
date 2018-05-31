@@ -46,9 +46,13 @@ void matmul(float* C, const float* A, const float* B, unsigned int hA,
 	      for (unsigned int k = 0; k < wB; k += wT) {
 		      for (unsigned int x = i; x < i + wT; x++) {
 		         for (unsigned int y = j; y < j + wT; y++) {
+               double sum = 0;
 			         for (unsigned int z = k; z < k + wT; z++) {
-			            C(x,y,wB) += (float)(A(x,z,wA) * B(y,z,wB));
+                  double a = A(x,z,hA);
+                  double b = B(y,z,hA);
+                  sum += a * b;
 			         }
+               C(x,y,wB) += (float)sum;
 		         }
 		      }
 	      }
